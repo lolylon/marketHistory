@@ -131,12 +131,16 @@ const Home = () => {
             {featuredProducts.map(product => (
               <Col key={product.id} xs={12} sm={6} md={3}>
                 <Card className="h-100 border-0 shadow-sm hover-shadow transition-all">
-                  <div className="position-relative" style={{ paddingTop: '100%' }}>
+                  <div className="ratio ratio-1x1">
                     <img
-                      src={product.images?.main}
+                      src={product.image}
                       alt={product.name}
-                      className="position-absolute top-0 start-0 w-100 h-100 object-fit-contain p-3"
+                      className="img-fluid object-fit-contain p-3"
                       style={{ backgroundColor: '#f8f9fa' }}
+                      onError={(e) => {
+                        e.target.src = '/placeholder.png';
+                        e.target.onerror = null;
+                      }}
                     />
                   </div>
                   <Card.Body>

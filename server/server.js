@@ -12,6 +12,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Добавляем обслуживание статических файлов
+app.use('/images', express.static(path.join(__dirname, '../src/images')));
+
 let db;
 
 async function setupDatabase() {
@@ -63,7 +66,7 @@ async function setupDatabase() {
         inStock: true,
         discount: null,
         description: "Latest smartphone with advanced features and powerful performance",
-        image: "/images/mainproducts/prd1.svg"
+        image: "http://localhost:5002/images/mainproducts/prd1.svg"
       },
       {
         id: 2,
@@ -76,7 +79,7 @@ async function setupDatabase() {
         inStock: true,
         discount: 10,
         description: "Powerful laptop for professionals with high performance and sleek design",
-        image: "/images/mainproducts/prd2.svg"
+        image: "http://localhost:5002/images/mainproducts/prd2.svg"
       },
       {
         id: 3,
@@ -89,7 +92,7 @@ async function setupDatabase() {
         inStock: true,
         discount: null,
         description: "Premium sound quality with noise cancellation and long battery life",
-        image: "/images/mainproducts/prd3.svg"
+        image: "http://localhost:5002/images/mainproducts/prd3.svg"
       },
       {
         id: 4,
@@ -102,7 +105,7 @@ async function setupDatabase() {
         inStock: true,
         discount: 15,
         description: "Track your fitness and stay connected with this advanced smartwatch",
-        image: "/images/mainproducts/prd10.svg"
+        image: "http://localhost:5002/images/mainproducts/prd10.svg"
       },
       {
         id: 5,
@@ -115,7 +118,7 @@ async function setupDatabase() {
         inStock: true,
         discount: null,
         description: "Portable tablet with high-resolution display and powerful performance",
-        image: "/images/mainproducts/prd11.svg"
+        image: "http://localhost:5002/images/mainproducts/prd11.svg"
       },
       {
         id: 6,
@@ -128,7 +131,7 @@ async function setupDatabase() {
         inStock: false,
         discount: null,
         description: "Next-generation gaming console with stunning graphics and fast performance",
-        image: "/images/mainproducts/prd12.svg"
+        image: "http://localhost:5002/images/mainproducts/prd12.svg"
       },
       {
         id: 7,
@@ -141,7 +144,7 @@ async function setupDatabase() {
         inStock: true,
         discount: 5,
         description: "True wireless earbuds with immersive sound and comfortable fit",
-        image: "/images/mainproducts/prd13.svg"
+        image: "http://localhost:5002/images/mainproducts/prd13.svg"
       },
       {
         id: 8,
@@ -154,7 +157,7 @@ async function setupDatabase() {
         inStock: true,
         discount: null,
         description: "Ultra HD smart TV with vibrant colors and smart features",
-        image: "/images/mainproducts/prd14.svg"
+        image: "http://localhost:5002/images/mainproducts/prd14.svg"
       },
       {
         id: 9,
@@ -167,7 +170,7 @@ async function setupDatabase() {
         inStock: true,
         discount: null,
         description: "Ultra HD smart TV with vibrant colors and smart features",
-        image: "/images/mainproducts/prd9.svg"
+        image: "http://localhost:5002/images/mainproducts/prd9.svg"
       },
       {
         id: 10,
@@ -180,7 +183,7 @@ async function setupDatabase() {
         inStock: true,
         discount: null,
         description: "Ultra HD smart TV with vibrant colors and smart features",
-        image: "/images/mainproducts/prd15.svg"
+        image: "http://localhost:5002/images/mainproducts/prd15.svg"
       },
       {
         id: 11,
@@ -193,7 +196,7 @@ async function setupDatabase() {
         inStock: true,
         discount: null,
         description: "Ultra HD smart TV with vibrant colors and smart features",
-        image: "/images/mainproducts/prd16.svg"
+        image: "http://localhost:5002/images/mainproducts/prd16.svg"
       },
       {
         id: 12,
@@ -206,7 +209,7 @@ async function setupDatabase() {
         inStock: true,
         discount: null,
         description: "Ultra HD smart TV with vibrant colors and smart features",
-        image: "/images/mainproducts/prd17.svg"
+        image: "http://localhost:5002/images/mainproducts/prd17.svg"
       }
     ];
 

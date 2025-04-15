@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Button, Card, Badge, Alert } from 'react-bootstrap';
 import { useProducts } from '../context/ProductContext';
 import { useAuth } from '../context/AuthContext';
 import { Star, StarFill, ArrowLeft } from 'react-bootstrap-icons';
+import axios from 'axios';
+import '../styles/ProductDetail.css';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -12,31 +14,44 @@ const ProductDetail = () => {
   const { isAuthenticated } = useAuth();
   const [quantity, setQuantity] = useState(1);
   const [showAlert, setShowAlert] = useState(false);
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const product = products.find(p => p.id === parseInt(id));
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5002/api/products/${id}`);
+        setProduct(response.data);
+        setLoading(false);
+      } catch (err) {
+        setError('Failed to fetch product details');
+        setLoading(false);
+      }
+    };
 
-  if (!product) {
-    return (
-      <Container className="py-5">
-        <Alert variant="danger">Product not found</Alert>
-      </Container>
-    );
-  }
+    fetchProduct();
+  }, [id]);
+
+  if (loading) return <div className="loading">Loading...</div>;
+  if (error) return <div className="error">{error}</div>;
+  if (!product) return <div className="not-found">Product not found</div>;
 
   const handleAddToCart = () => {
     if (!isAuthenticated) {
       setShowAlert(true);
       return;
     }
-    addToCart(product, quantity);
+    addToCart(product);
     navigate('/cart');
   };
 
   const renderStars = (rating) => {
     const stars = [];
+    const ratingValue = rating || 0;
     for (let i = 1; i <= 5; i++) {
       stars.push(
-        i <= rating ? (
+        i <= ratingValue ? (
           <StarFill key={i} className="text-warning" />
         ) : (
           <Star key={i} className="text-warning" />
@@ -69,7 +84,7 @@ const ProductDetail = () => {
             <Card.Body className="p-4">
               <div className="ratio ratio-1x1">
                 <img
-                  src={product.images?.main}
+                  src={product.image}
                   alt={product.name}
                   className="img-fluid rounded"
                   style={{ objectFit: 'contain' }}
@@ -87,25 +102,41 @@ const ProductDetail = () => {
                   <h1 className="h3 mb-2">{product.name}</h1>
                   <div className="d-flex align-items-center mb-2">
                     {renderStars(product.rating)}
-                    <span className="ms-2 text-muted">({product.reviews} reviews)</span>
+                    <span className="ms-2 text-muted">
+                      ({product.rating ? product.rating.toFixed(1) : 'No'} rating)
+                    </span>
                   </div>
                 </div>
                 <Badge bg="success" className="fs-6">
-                  ${product.price}
+                  ${product.price.toFixed(2)}
                 </Badge>
               </div>
 
               <p className="text-muted mb-4">{product.description}</p>
 
               <div className="mb-4">
-                <h5 className="mb-3">Features:</h5>
+                <h5 className="mb-3">Product Details:</h5>
                 <ul className="list-unstyled">
-                  {product.features?.map((feature, index) => (
-                    <li key={index} className="mb-2">
+                  <li className="mb-2">
+                    <span className="text-success me-2">✓</span>
+                    Category: {product.category}
+                  </li>
+                  <li className="mb-2">
+                    <span className="text-success me-2">✓</span>
+                    Brand: {product.brand}
+                  </li>
+                  {product.isNew && (
+                    <li className="mb-2">
                       <span className="text-success me-2">✓</span>
-                      {feature}
+                      New Arrival
                     </li>
-                  ))}
+                  )}
+                  {product.discount && (
+                    <li className="mb-2">
+                      <span className="text-success me-2">✓</span>
+                      {product.discount}% Discount
+                    </li>
+                  )}
                 </ul>
               </div>
 
@@ -127,31 +158,20 @@ const ProductDetail = () => {
                   size="lg"
                   className="flex-grow-1"
                   onClick={handleAddToCart}
+                  disabled={!product.inStock}
                 >
-                  Add to Cart
+                  {product.inStock ? 'Add to Cart' : 'Out of Stock'}
                 </Button>
               </div>
 
               <div className="border-top pt-4">
-                <h5 className="mb-3">Additional Information</h5>
-                <Row>
-                  <Col sm={6}>
-                    <p className="mb-2">
-                      <strong>Category:</strong> {product.category}
-                    </p>
-                    <p className="mb-2">
-                      <strong>Brand:</strong> {product.brand}
-                    </p>
-                  </Col>
-                  <Col sm={6}>
-                    <p className="mb-2">
-                      <strong>Stock:</strong> {product.stock} units
-                    </p>
-                    <p className="mb-2">
-                      <strong>SKU:</strong> {product.sku}
-                    </p>
-                  </Col>
-                </Row>
+                <h5 className="mb-3">Stock Information</h5>
+                <p className="mb-2">
+                  <strong>Status:</strong>{' '}
+                  <Badge bg={product.inStock ? 'success' : 'danger'}>
+                    {product.inStock ? 'In Stock' : 'Out of Stock'}
+                  </Badge>
+                </p>
               </div>
             </Card.Body>
           </Card>
