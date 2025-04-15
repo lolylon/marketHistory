@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useProducts } from '../context/ProductContext';
+import { useTheme } from '../context/ThemeContext';
 
-import { Navbar as BootstrapNavbar, Nav, Container, NavDropdown, Badge } from 'react-bootstrap';
-import { Cart3, Cpu } from 'react-bootstrap-icons';
+import { Navbar as BootstrapNavbar, Nav, Container, NavDropdown, Badge, Button } from 'react-bootstrap';
+import { Cart3, Cpu, Sun, Moon } from 'react-bootstrap-icons';
 
 const Navbar = () => {
   const { isAuthenticated, user, logout, isAdmin } = useAuth();
   const { cart } = useProducts();
+  const { isDarkMode, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -60,7 +62,16 @@ const Navbar = () => {
             </Nav.Link>
           </Nav>
           
-          <Nav>
+          <Nav className="align-items-center">
+            <Button
+              variant="link"
+              className="nav-link p-0 px-2 me-2"
+              onClick={toggleTheme}
+              title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            >
+              {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+            </Button>
+            
             {isAuthenticated ? (
               <>
                 <Nav.Link 
