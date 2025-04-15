@@ -1,0 +1,100 @@
+.product-card {
+  transition: all 0.3s ease;
+  border-radius: 0.5rem !important;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1) !important;
+}
+
+.product-card .card-img-container {
+  position: relative;
+  padding-top: 100%;
+  background-color: #f8f9fa;
+  overflow: hidden;
+}
+
+.product-card .card-img-container img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover .card-img-container img {
+  transform: scale(1.05);
+}
+
+.product-card .card-body {
+  padding: 1.25rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 180px;
+}
+
+.product-card .card-title {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #212529;
+  line-height: 1.4;
+  height: 2.8em;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.product-card .rating {
+  margin-bottom: 0.75rem;
+}
+
+.product-card .rating .star {
+  font-size: 0.9rem;
+}
+
+.product-card .price {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #0d6efd;
+  margin-bottom: 0.25rem;
+}
+
+.product-card .discount {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #dc3545;
+}
+
+.product-card .card-footer {
+  padding: 1rem 1.25rem;
+  background-color: transparent;
+  border-top: none;
+  margin-top: auto;
+}
+
+.product-card .btn-add-to-cart {
+  padding: 0.75rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.product-card .btn-add-to-cart:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0.25rem 0.5rem rgba(13, 110, 253, 0.2);
+}
+
+.product-card .btn-add-to-cart:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
