@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Container, Card, Form, Button, Alert, Row, Col } from 'react-bootstrap';
 import { Envelope, Lock, Eye, EyeSlash } from 'react-bootstrap-icons';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -10,11 +11,21 @@ const Login = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
   
   const from = location.state?.from?.pathname || '/dashboard';
+  
+  useEffect(() => {
+    // Simulate initial loading
+    const timer = setTimeout(() => {
+      setInitialLoading(false);
+    }, 1000);
+    
+    return () => clearTimeout(timer);
+  }, []);
   
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,6 +51,14 @@ const Login = () => {
       setIsLoading(false);
     }
   };
+
+  if (initialLoading) {
+    return (
+      <Container className="py-5">
+        <LoadingSpinner text="Loading login form..." />
+      </Container>
+    );
+  }
 
   return (
     <Container className="py-5">
@@ -97,23 +116,27 @@ const Login = () => {
                   </div>
                 </Form.Group>
                 
-                <Button
-                  type="submit"
-                  variant="primary"
-                  size="lg"
-                  className="w-100 mb-3"
+                {/* Кнопка входа с индикатором загрузки */}
+                <Button 
+                  variant="primary" 
+                  type="submit" 
+                  className="w-100 py-2 mt-3" 
                   disabled={isLoading}
                 >
-                  {isLoading ? 'Signing In...' : 'Sign In'}
+                  {isLoading ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                      Signing in...
+                    </>
+                  ) : (
+                    'Sign In'
+                  )}
                 </Button>
               </Form>
               
-              <div className="text-center mt-3">
-                <p className="text-muted mb-0">
-                  Don't have an account?{' '}
-                  <Link to="/register" className="text-decoration-none">
-                    <span className="text-primary fw-medium">Sign up</span>
-                  </Link>
+              <div className="text-center mt-4">
+                <p className="mb-0">
+                  Don't have an account? <Link to="/register" className="text-decoration-none">Sign up</Link>
                 </p>
               </div>
             </Card.Body>

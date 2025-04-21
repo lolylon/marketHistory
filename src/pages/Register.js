@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Container, Card, Form, Button, Alert, Row, Col } from 'react-bootstrap';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const Register = () => {
   const { register } = useAuth();
@@ -14,6 +15,16 @@ const Register = () => {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate initial loading
+    const timer = setTimeout(() => {
+      setInitialLoading(false);
+    }, 1000);
+    
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,6 +53,14 @@ const Register = () => {
       setLoading(false);
     }
   };
+
+  if (initialLoading) {
+    return (
+      <Container className="py-5">
+        <LoadingSpinner text="Loading registration form..." />
+      </Container>
+    );
+  }
 
   return (
     <Container className="py-5">
@@ -102,20 +121,27 @@ const Register = () => {
                   />
                 </Form.Group>
 
-                <Button
-                  variant="primary"
-                  type="submit"
-                  className="w-100"
+                {/* Кнопка регистрации с индикатором загрузки */}
+                <Button 
+                  variant="primary" 
+                  type="submit" 
+                  className="w-100 py-2 mt-3" 
                   disabled={loading}
                 >
-                  {loading ? 'Creating Account...' : 'Create Account'}
+                  {loading ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                      Creating Account...
+                    </>
+                  ) : (
+                    'Create Account'
+                  )}
                 </Button>
               </Form>
-
+              
               <div className="text-center mt-3">
-                <p className="mb-0">
-                  Already have an account?{' '}
-                  <Link to="/login">Sign In</Link>
+                <p>
+                  Already have an account? <Link to="/login">Sign In</Link>
                 </p>
               </div>
             </Card.Body>
