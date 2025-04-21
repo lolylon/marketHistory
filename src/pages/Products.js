@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useProducts } from '../context/ProductContext';
 import { 
@@ -13,13 +13,31 @@ import {
 } from 'react-bootstrap';
 import { Search } from 'react-bootstrap-icons';
 import { Star, StarFill } from 'react-bootstrap-icons';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const Products = () => {
-  const { products, loading } = useProducts();
+  const { products } = useProducts();
   const [searchTerm, setSearchTerm] = React.useState('');
   const [sortBy, setSortBy] = React.useState('name');
   const [sortOrder, setSortOrder] = React.useState('asc');
   const [expandedDescriptions, setExpandedDescriptions] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [displayProducts, setDisplayProducts] = useState([]);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      setLoading(true);
+      try {
+        // Simulate network delay
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        setDisplayProducts(products);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProducts();
+  }, [products]);
 
   const toggleDescription = (productId) => {
     setExpandedDescriptions(prev => ({
@@ -86,7 +104,7 @@ const Products = () => {
   };
 
   const filteredProducts = React.useMemo(() => {
-    return products
+    return displayProducts
       .filter(product => 
         product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (product.description && product.description.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -103,12 +121,12 @@ const Products = () => {
         }
         return 0;
       });
-  }, [products, searchTerm, sortBy, sortOrder]);
+  }, [displayProducts, searchTerm, sortBy, sortOrder]);
 
   if (loading) {
     return (
-      <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: '60vh' }}>
-        <Spinner animation="border" variant="primary" />
+      <Container className="py-5">
+        <LoadingSpinner text="Loading products..." />
       </Container>
     );
   }
@@ -200,4 +218,4 @@ const Products = () => {
   );
 };
 
-export default Products; 
+export default Products;
