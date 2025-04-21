@@ -63,7 +63,7 @@ const Order = () => {
                   <div className="d-flex align-items-center p-3">
                     <div className="position-relative" style={{ width: '80px', height: '80px' }}>
                       <img
-                        src={item.images?.main}
+                        src={item.image || item.images?.main}
                         alt={item.name}
                         className="rounded"
                         style={{ 
@@ -72,6 +72,10 @@ const Order = () => {
                           objectFit: 'contain',
                           backgroundColor: '#f8f9fa',
                           padding: '0.5rem'
+                        }}
+                        onError={(e) => {
+                          e.target.src = '/placeholder.png';
+                          e.target.onerror = null;
                         }}
                       />
                     </div>
@@ -146,4 +150,4 @@ const Order = () => {
   );
 };
 
-export default Order; 
+export default Order;
