@@ -1,0 +1,16 @@
+:root {
+  /* Цвета */
+  --primary-color: #4f46e5;
+  --primary-hover: #4338ca;
+  --secondary-color: #10b981;
+  --text-color: #1e293b;
+  --bg-color: #ffffff;
+  
+  /* Размеры */
+  --spacing-unit: 1rem;
+  --border-radius: 0.5rem;
+  
+  /* Шрифты */
+  --font-main: 'Inter', sans-serif;
+  --font-size-base: 16px;
+}
