@@ -126,4 +126,5 @@
 [data-bs-theme="dark"] .modal-footer {
   border-top-color: #373b3e;
   background-color: red;
+  color: black;
 }
