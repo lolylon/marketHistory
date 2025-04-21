@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { Star, StarFill, ArrowLeft } from 'react-bootstrap-icons';
 import axios from 'axios';
 import '../styles/ProductDetail.css';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -20,12 +21,16 @@ const ProductDetail = () => {
 
   useEffect(() => {
     const fetchProduct = async () => {
+      setLoading(true);
       try {
+        // Simulate network delay
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
         const response = await axios.get(`http://localhost:5002/api/products/${id}`);
         setProduct(response.data);
-        setLoading(false);
       } catch (err) {
         setError('Failed to fetch product details');
+      } finally {
         setLoading(false);
       }
     };
@@ -33,7 +38,14 @@ const ProductDetail = () => {
     fetchProduct();
   }, [id]);
 
-  if (loading) return <div className="loading">Loading...</div>;
+  if (loading) {
+    return (
+      <Container className="py-5">
+        <LoadingSpinner text="Loading product details..." />
+      </Container>
+    );
+  }
+  
   if (error) return <div className="error">{error}</div>;
   if (!product) return <div className="not-found">Product not found</div>;
 

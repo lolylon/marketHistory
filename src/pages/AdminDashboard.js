@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Table, Button, Modal, Form, Alert } from 'react-bootstrap';
 import axios from 'axios';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const API_URL = 'http://localhost:5002/api';
 
@@ -17,6 +18,7 @@ const AdminDashboard = () => {
         category: ''
     });
     const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(true); // Added loading state
     const navigate = useNavigate();
 
     // Создаем конфиг для axios с токеном
@@ -35,12 +37,18 @@ const AdminDashboard = () => {
     }, [navigate]);
 
     const fetchProducts = async () => {
+        setIsLoading(true); // Set loading to true when fetching starts
         try {
+            // Simulate network delay
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
             const response = await axios.get(`${API_URL}/products`);
             setProducts(response.data);
         } catch (error) {
             setError('Ошибка при загрузке товаров');
             console.error('Error fetching products:', error);
+        } finally {
+            setIsLoading(false); // Set loading to false when fetching completes
         }
     };
 
@@ -134,44 +142,48 @@ const AdminDashboard = () => {
                 Добавить товар
             </Button>
 
-            <Table striped bordered hover>
-                <thead>
-                    <tr>
-                        <th>Название</th>
-                        <th>Описание</th>
-                        <th>Цена</th>
-                        <th>Категория</th>
-                        <th>Действия</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {products.map((product) => (
-                        <tr key={product.id}>
-                            <td>{product.name}</td>
-                            <td>{product.description}</td>
-                            <td>{product.price}</td>
-                            <td>{product.category}</td>
-                            <td>
-                                <Button
-                                    variant="warning"
-                                    size="sm"
-                                    className="me-2"
-                                    onClick={() => handleEdit(product)}
-                                >
-                                    Редактировать
-                                </Button>
-                                <Button
-                                    variant="danger"
-                                    size="sm"
-                                    onClick={() => handleDelete(product.id)}
-                                >
-                                    Удалить
-                                </Button>
-                            </td>
+            {isLoading ? (
+                <LoadingSpinner text="Загрузка товаров..." />
+            ) : (
+                <Table striped bordered hover>
+                    <thead>
+                        <tr>
+                            <th>Название</th>
+                            <th>Описание</th>
+                            <th>Цена</th>
+                            <th>Категория</th>
+                            <th>Действия</th>
                         </tr>
-                    ))}
-                </tbody>
-            </Table>
+                    </thead>
+                    <tbody>
+                        {products.map((product) => (
+                            <tr key={product.id}>
+                                <td>{product.name}</td>
+                                <td>{product.description}</td>
+                                <td>{product.price}</td>
+                                <td>{product.category}</td>
+                                <td>
+                                    <Button
+                                        variant="warning"
+                                        size="sm"
+                                        className="me-2"
+                                        onClick={() => handleEdit(product)}
+                                    >
+                                        Редактировать
+                                    </Button>
+                                    <Button
+                                        variant="danger"
+                                        size="sm"
+                                        onClick={() => handleDelete(product.id)}
+                                    >
+                                        Удалить
+                                    </Button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </Table>
+            )}
 
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>
@@ -241,4 +253,4 @@ const AdminDashboard = () => {
     );
 };
 
-export default AdminDashboard; 
+export default AdminDashboard;
