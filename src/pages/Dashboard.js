@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { 
@@ -8,11 +8,22 @@ import {
   Card,
   Button
 } from 'react-bootstrap';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    // Simulate initial loading
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+    
+    return () => clearTimeout(timer);
+  }, []);
   
   const handleLogout = () => {
     logout();
@@ -22,6 +33,14 @@ const Dashboard = () => {
   const isActive = (path) => {
     return location.pathname === path;
   };
+  
+  if (loading) {
+    return (
+      <Container className="py-5">
+        <LoadingSpinner text="Loading dashboard..." />
+      </Container>
+    );
+  }
   
   return (
     <div className="container mx-auto px-4 py-8">

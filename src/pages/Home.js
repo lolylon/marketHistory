@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useProducts } from '../context/ProductContext';
 import { 
@@ -16,9 +16,21 @@ import {
   ShieldCheck,
   ArrowRepeat
 } from 'react-bootstrap-icons';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const Home = () => {
   const { products } = useProducts();
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    // Simulate initial loading
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+    
+    return () => clearTimeout(timer);
+  }, []);
+  
   const featuredProducts = products.slice(0, 4);
   
   const stats = [
@@ -34,6 +46,14 @@ const Home = () => {
     { name: 'Home & Living', icon: '🏠', count: 80 },
     { name: 'Sports', icon: '⚽', count: 60 }
   ];
+  
+  if (loading) {
+    return (
+      <Container className="py-5 d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
+        <LoadingSpinner text="Loading homepage..." size="lg" />
+      </Container>
+    );
+  }
   
   return (
     <div className="home-page">
